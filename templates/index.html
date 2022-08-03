@@ -54,12 +54,15 @@
         );
 
         flipVerticalInput.addEventListener("click", (e) => {
-          console.log("[flip-vertical] " + e.target.checked);
+          flipVertical = e.target.checked;
+          console.log("[flip-vertical] " + flipVertical);
           updateStreamSrc();
         });
 
         flipHorizontalInput.addEventListener("click", (e) => {
-          console.log("[flip-horizontal] " + e.target.checked);
+          flipHorizontal = e.target.checked;
+          console.log("[flip-horizontal] " + flipHorizontal);
+
           updateStreamSrc();
         });
       });
