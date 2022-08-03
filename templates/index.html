@@ -11,60 +11,22 @@
         margin: 0px;
         box-sizing: border-box;
       }
-      body {
-        display: flex;
-        flex-direction: column;
-      }
-      .video-stream {
-        min-height: 480px;
-        min-width: 640px;
-      }
-      .controls {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .controls div {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 8px;
-        padding-bottom: 0px;
-      }
-      input[type="checkbox"] {
-        margin-right: 6px;
-      }
     </style>
     <script>
-      let flipHorizontal = false;
-      let flipVertical = false;
-
       document.addEventListener("DOMContentLoaded", (e) => {
         const stream = document.getElementById("video-stream");
 
-        const updateStreamSrc = () => {
-          stream.src = `/video?flip_v=${flipVertical}&flip_h=${flipHorizontal}`;
-        };
+        height = window.screen.height;
+        width = window.screen.width;
 
-        const flipVerticalInput = document.getElementById(
-          "flip-vertical-input"
-        );
-        const flipHorizontalInput = document.getElementById(
-          "flip-horizontal-input"
-        );
+        if (height > width) {
+          stream.width = height;
+          stream.height = width;
+          return;
+        }
 
-        flipVerticalInput.addEventListener("click", (e) => {
-          flipVertical = e.target.checked;
-          console.log("[flip-vertical] " + flipVertical);
-          updateStreamSrc();
-        });
-
-        flipHorizontalInput.addEventListener("click", (e) => {
-          flipHorizontal = e.target.checked;
-          console.log("[flip-horizontal] " + flipHorizontal);
-
-          updateStreamSrc();
-        });
+        stream.width = width;
+        stream.height = height;
       });
     </script>
   </head>
@@ -75,19 +37,5 @@
       src="{{ url_for('video') }}"
       alt="Video Stream from Camera"
     />
-    <div class="controls">
-      <div>
-        <input type="checkbox" name="flip-vertical" id="flip-vertical-input" />
-        <label for="flip-vertical">Flip vertical</label>
-      </div>
-      <div>
-        <input
-          type="checkbox"
-          name="flip-horizontal"
-          id="flip-horizontal-input"
-        />
-        <label for="flip-horizontal">Flip horizontal</label>
-      </div>
-    </div>
   </body>
 </html>

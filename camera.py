@@ -15,11 +15,11 @@ class VideoCamera:
         self.cap.release()
 
     def apply_flips(self, frame: Any, flip_h: bool = False, flip_v: bool = False) -> Any:
-        if flip_v:
-            frame = np.flip(frame, 0)
-
         if flip_h:
             frame = np.fliplr(frame)
+
+        if flip_v:
+            frame = np.flip(frame, 0)
 
         return frame
 
