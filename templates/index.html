@@ -36,7 +36,16 @@
       }
     </style>
     <script>
+      let flipHorizontal = false;
+      let flipVertical = false;
+
       document.addEventListener("DOMContentLoaded", (e) => {
+        const stream = document.getElementById("video-stream");
+
+        const updateStreamSrc = () => {
+          stream.src = `/video?flip_v=${flipVertical}&flip_h=${flipHorizontal}`;
+        };
+
         const flipVerticalInput = document.getElementById(
           "flip-vertical-input"
         );
@@ -44,12 +53,14 @@
           "flip-horizontal-input"
         );
 
-        flipVerticalInput.addEventListener("change", (e) => {
-          console.log("[flip-vertical] " + e);
+        flipVerticalInput.addEventListener("click", (e) => {
+          console.log("[flip-vertical] " + e.checked);
+          updateStreamSrc();
         });
 
-        flipHorizontalInput.addEventListener("change", (e) => {
-          console.log("[flip-horizontal] " + e);
+        flipHorizontalInput.addEventListener("click", (e) => {
+          console.log("[flip-horizontal] " + e.checked);
+          updateStreamSrc();
         });
       });
     </script>
@@ -57,6 +68,7 @@
   <body>
     <img
       class="video-stream"
+      id="video-stream"
       src="{{ url_for('video') }}"
       alt="Video Stream from Camera"
     />
