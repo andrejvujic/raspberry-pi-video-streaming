@@ -5,8 +5,74 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Video Camera</title>
+    <style>
+      * {
+        padding: 0px;
+        margin: 0px;
+        box-sizing: border-box;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+      .video-stream {
+        min-height: 480px;
+        min-width: 640px;
+      }
+      .controls {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .controls div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        padding-bottom: 0px;
+      }
+      input[type="checkbox"] {
+        margin-right: 6px;
+      }
+    </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", (e) => {
+        const flipVerticalInput = document.getElementById(
+          "flip-vertical-input"
+        );
+        const flipHorizontalInput = document.getElementById(
+          "flip-horizontal-input"
+        );
+
+        flipVerticalInput.addEventListener("change", (e) => {
+          console.log("[flip-vertical] " + e);
+        });
+
+        flipHorizontalInput.addEventListener("change", (e) => {
+          console.log("[flip-horizontal] " + e);
+        });
+      });
+    </script>
   </head>
   <body>
-    <img src="{{ url_for('video') }}" alt="Video Stream from Camera" />
+    <img
+      class="video-stream"
+      src="{{ url_for('video') }}"
+      alt="Video Stream from Camera"
+    />
+    <div class="controls">
+      <div>
+        <input type="checkbox" name="flip-vertical" id="flip-vertical-input" />
+        <label for="flip-vertical">Flip vertical</label>
+      </div>
+      <div>
+        <input
+          type="checkbox"
+          name="flip-horizontal"
+          id="flip-horizontal-input"
+        />
+        <label for="flip-horizontal">Flip horizontal</label>
+      </div>
+    </div>
   </body>
 </html>
