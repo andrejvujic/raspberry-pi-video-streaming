@@ -12,30 +12,8 @@
         box-sizing: border-box;
       }
     </style>
-    <script>
-      document.addEventListener("DOMContentLoaded", (e) => {
-        const stream = document.getElementById("video-stream");
-
-        height = window.screen.height;
-        width = window.screen.width;
-
-        if (height > width) {
-          stream.width = "100vh";
-          stream.height = "100vw";
-          return;
-        }
-
-        stream.width = "100vw";
-        stream.height = "100vh";
-      });
-    </script>
   </head>
   <body>
-    <img
-      class="video-stream"
-      id="video-stream"
-      src="{{ url_for('video') }}"
-      alt="Video Stream from Camera"
-    />
+    <img src="{{ url_for('video') }}" alt="Video Stream from Camera" />
   </body>
 </html>
