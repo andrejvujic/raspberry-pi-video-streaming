@@ -16,17 +16,17 @@
       document.addEventListener("DOMContentLoaded", (e) => {
         const stream = document.getElementById("video-stream");
 
-        height = window.screen.height;
-        width = window.screen.width;
+        height = window.screen.availHeight;
+        width = window.screen.availWidth;
 
         if (height > width) {
-          stream.width = height;
-          stream.height = width;
+          stream.width = `${height}px`;
+          stream.height = `${width}px`;
           return;
         }
 
-        stream.width = width;
-        stream.height = height;
+        stream.width = `${width}px`;
+        stream.height = `${height}px`;
       });
     </script>
   </head>
