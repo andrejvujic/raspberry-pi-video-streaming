@@ -11,6 +11,7 @@ class VideoCamera:
         self.index = index
         self.cap = cv2.VideoCapture(self.index)
         self.type = type
+        self.previous_frame = None
 
         config = self._load_config()
         self.flip_h = config["flip_h"]
@@ -36,7 +37,12 @@ class VideoCamera:
 
     def get_frame(self) -> Any:
         _, frame = self.cap.read()
-        frame = self.apply_flips(frame=frame)
-        _, image = cv2.imencode(self.type, frame)
+        if _:
+            frame = self.apply_flips(frame=frame)
+            _, image = cv2.imencode(self.type, frame)
+            self.previous_frame = frame
 
+            return image.tobytes()
+
+        _, image = cv2.imencode(self.type, self.previous_frame)
         return image.tobytes()
