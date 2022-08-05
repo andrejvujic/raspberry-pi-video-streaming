@@ -19,8 +19,8 @@ class VideoCamera:
         time.sleep(2.0)
 
     def _load_config(self) -> Any:
-        with open(self.CONFIG_FILE, "r") as f:
-            return json.loads(f)
+        with open(self.CONFIG_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
 
     def __del__(self) -> None:
         self.cap.release()
