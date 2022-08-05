@@ -1,3 +1,4 @@
+import json
 from typing import Any
 import cv2
 import time
@@ -5,13 +6,21 @@ import numpy as np
 
 
 class VideoCamera:
-    def __init__(self, type: str = ".jpg", index: int = -1, flip_h: bool = False, flip_v: bool = False) -> None:
+    def __init__(self, type: str = ".jpg", index: int = -1) -> None:
+        self.CONFIG_FILE = "camera.json"
         self.index = index
         self.cap = cv2.VideoCapture(self.index)
         self.type = type
-        self.flip_h = flip_h
-        self.flip_v = flip_v
+
+        config = self._load_config()
+        self.flip_h = config["flip_h"]
+        self.flip_v = config["flip_v"]
+
         time.sleep(2.0)
+
+    def _load_config(self) -> Any:
+        with open(self.CONFIG_FILE, "r") as f:
+            return json.loads(f)
 
     def __del__(self) -> None:
         self.cap.release()

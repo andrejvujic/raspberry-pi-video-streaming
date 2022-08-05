@@ -1,7 +1,7 @@
 from flask import Flask, Response, render_template
 from camera import VideoCamera
 
-camera = VideoCamera(flip_v=True, flip_h=True)
+camera = VideoCamera()
 app = Flask(__name__)
 
 
