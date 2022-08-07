@@ -1,8 +1,10 @@
 from flask import Flask, Response, render_template
+from flask_ngrok import run_with_ngrok
 from camera import VideoCamera
 
 camera = VideoCamera()
 app = Flask(__name__)
+run_with_ngrok(app)
 
 
 def _gen(camera: VideoCamera):
@@ -30,4 +32,4 @@ def video():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=False)
+    app.run()
