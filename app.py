@@ -19,7 +19,7 @@ def _gen(camera: VideoCamera):
 def index():
     _ = request.url
     if _[-1] == "/":
-        _[-1] = ""
+        _ = _[:-1]
 
     return render_template("index.html", video_feed_url=f"{_}/video")
 
