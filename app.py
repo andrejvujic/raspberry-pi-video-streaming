@@ -17,7 +17,11 @@ def _gen(camera: VideoCamera):
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("index.html", video_feed_url="/video")
+    _ = request.url
+    if _[-1] == "/":
+        _[-1] = ""
+
+    return render_template("index.html", video_feed_url=f"{_}/video")
 
 
 @app.route("/video", methods=["GET"])
