@@ -1,4 +1,5 @@
-from flask import Flask, Response, render_template
+from urllib import request
+from flask import Flask, Response, render_template, request
 from camera import VideoCamera
 
 camera = VideoCamera()
@@ -16,7 +17,7 @@ def _gen(camera: VideoCamera):
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("index.html")
+    return render_template("index.html", video_feed_url=f"{request.url}/video")
 
 
 @app.route("/video", methods=["GET"])
