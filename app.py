@@ -17,7 +17,7 @@ def _gen(camera: VideoCamera):
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("index.html", video_feed_url=f"{request.url}/video")
+    return render_template("index.html", video_feed_url="/video")
 
 
 @app.route("/video", methods=["GET"])
