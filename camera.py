@@ -57,14 +57,14 @@ class VideoCamera:
                     self.to_grayscale(difference),
                 )
 
-            _, image = cv2.imencode(self.type, frame)
-
             self.previous_frame = frame
+            return frame
 
-            return image.tobytes()
+        return self.previous_frame
 
-        _, image = cv2.imencode(self.type, self.previous_frame)
-
+    def get_image(self) -> Any:
+        frame = self.get_frame()
+        _, image = cv2.imencode(self.type, frame)
         return image.tobytes()
 
     def get_difference_between_frames(self, frame: Any) -> Any:
