@@ -12,9 +12,6 @@ class VideoCamera:
     def __init__(self, type: str = ".jpg") -> None:
         self.CONFIG_FILE = "camera.json"
 
-        self.type = type
-        self.previous_frame = None
-
         config = self._load_config()
         self.flip_h = config["flip_h"]
         self.flip_v = config["flip_v"]
@@ -23,6 +20,9 @@ class VideoCamera:
         self.port = config["port"]
 
         self.cap = cv2.VideoCapture(self.index)
+
+        self.type = type
+        self.previous_frame = None
 
         time.sleep(2.0)
 
