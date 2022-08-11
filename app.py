@@ -2,6 +2,7 @@ from urllib import request
 import webbrowser
 from flask import Flask, Response, render_template, request
 from camera import VideoCamera
+import RPi.GPIO as GPIO
 
 camera = VideoCamera()
 app = Flask(__name__)
@@ -36,11 +37,14 @@ def video():
 
 
 if __name__ == "__main__":
-    webbrowser.open(
-        f"http://0.0.0.0:{camera.port}",
-    )
+    try:
+        webbrowser.open(
+            f"http://0.0.0.0:{camera.port}",
+        )
 
-    app.run(
-        host="0.0.0.0", port=camera.port,
-        debug=False,
-    )
+        app.run(
+            host="0.0.0.0", port=camera.port,
+            debug=False,
+        )
+    finally:
+        GPIO.cleanup()

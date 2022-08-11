@@ -1,5 +1,6 @@
 import json
-from typing import Any, Type
+from component import Component
+from typing import Any
 import cv2
 import time
 import numpy as np
@@ -8,6 +9,8 @@ NoneType = type(None)
 
 GREEN = (0, 255, 0)
 THICKNESS = 3
+
+led = Component(pin=14)
 
 
 class VideoCamera:
@@ -107,11 +110,14 @@ class VideoCamera:
         )
 
         if len(contours) > 0:
+            led.on()
             for cnt in contours:
                 (x, y, w, h) = cv2.boundingRect(cnt)
                 if cv2.contourArea(cnt) > 700 and (x < 840) and (y > 150 and y < 350):
                     cv2.rectangle(frame, (x, y), (x + w, y + h),
                                   GREEN, THICKNESS)
+        else:
+            led.off()
 
         return frame
 
