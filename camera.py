@@ -1,11 +1,12 @@
 import json
+from types import NoneType
 from typing import Any
 import cv2
 import time
 import numpy as np
 
 GREEN = (0, 255, 0)
-THICKNESS = 2
+THICKNESS = 3
 
 
 class VideoCamera:
@@ -47,7 +48,13 @@ class VideoCamera:
         if _:
             frame = self.apply_flips(frame=frame)
             frame = self.zoom(frame=frame)
-            frame = self.detect_people(frame=frame)
+
+            if type(self.previous_frame) is not NoneType and self.previous_frame.all():
+                difference = self.get_difference_between_frames(frame=frame)
+                frame = self.detect_motion(
+                    frame,
+                    self.to_grayscale(difference),
+                )
 
             _, image = cv2.imencode(self.type, frame)
 
@@ -56,30 +63,11 @@ class VideoCamera:
             return image.tobytes()
 
         _, image = cv2.imencode(self.type, self.previous_frame)
+
         return image.tobytes()
 
-    def detect_people(self, frame: Any) -> Any:
-        hog = cv2.HOGDescriptor()
-        hog.setSVMDetector(
-            cv2.HOGDescriptor_getDefaultPeopleDetector(),
-        )
-
-        frame = self.to_grayscale(frame=frame)
-        boxes, _ = hog.detectMultiScale(frame, winStride=(8, 8))
-        boxes = np.array(
-            [[x, y, x + w, y + h] for (x, y, w, h) in boxes]
-        )
-
-        for (xA, yA, xB, yB) in boxes:
-            cv2.rectangle(
-                frame,
-                (xA, yA), (xB, yB),
-                color=GREEN,
-                thickness=THICKNESS,
-            )
-
-        frame = self.to_color(frame=frame)
-        return frame
+    def get_difference_between_frames(self, frame: Any) -> Any:
+        return cv2.absdiff(frame, self.previous_frame)
 
     def zoom(self, frame: Any, coord=None) -> Any:
         h, w, _ = [self.zoom_factor * i for i in frame.shape]
@@ -90,10 +78,39 @@ class VideoCamera:
             cx, cy = [self.zoom_factor * c for c in coord]
 
         frame = cv2.resize(
-            frame, (0, 0), fx=self.zoom_factor, fy=self.zoom_factor)
-        frame = frame[int(round(cy - h/self.zoom_factor * .5)): int(round(cy + h/self.zoom_factor * .5)),
-                      int(round(cx - w/self.zoom_factor * .5)): int(round(cx + w/self.zoom_factor * .5)),
-                      :]
+            frame,
+            (0, 0),
+            fx=self.zoom_factor, fy=self.zoom_factor,
+        )
+
+        frame = frame[
+            int(round(cy - h/self.zoom_factor * .5)): int(round(cy + h/self.zoom_factor * .5)),
+            int(round(cx - w/self.zoom_factor * .5)): int(round(cx + w/self.zoom_factor * .5)),
+            :]
+
+        return frame
+
+    def detect_motion(self, frame: Any, diffrence_gray: Any):
+        diffrence_blur = cv2.GaussianBlur(diffrence_gray, (5, 5), 0)
+
+        diffrence_threshold = cv2.threshold(
+            diffrence_blur, 25, 255, cv2.THRESH_BINARY,
+        )[1]
+
+        diffrence_dilate = cv2.dilate(
+            diffrence_threshold, None, iterations=4,
+        )
+
+        (contours, _) = cv2.findContours(
+            diffrence_dilate.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE,
+        )
+
+        if len(contours) > 0:
+            for cnt in contours:
+                (x, y, w, h) = cv2.boundingRect(cnt)
+                if cv2.contourArea(cnt) > 700 and (x < 840) and (y > 150 and y < 350):
+                    cv2.rectangle(frame, (x, y), (x + w, y + h),
+                                  GREEN, THICKNESS)
 
         return frame
 
