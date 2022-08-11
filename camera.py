@@ -1,9 +1,10 @@
 import json
-from types import NoneType
-from typing import Any
+from typing import Any, Type
 import cv2
 import time
 import numpy as np
+
+NoneType = type(None)
 
 GREEN = (0, 255, 0)
 THICKNESS = 3
