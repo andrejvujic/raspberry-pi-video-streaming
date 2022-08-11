@@ -81,10 +81,21 @@ class VideoCamera:
         frame = self.to_color(frame=frame)
         return frame
 
-    def zoom(self, frame: Any):
-        return cv2.resize(
-            frame, None, fx=self.zoom_factor, fy=self.zoom_factor,
-        )
+    def zoom(self, frame: Any, coord=None) -> Any:
+        h, w, _ = [self.zoom_factor * i for i in frame.shape]
+
+        if coord is None:
+            cx, cy = w/2, h/2
+        else:
+            cx, cy = [self.zoom_factor * c for c in coord]
+
+        frame = cv2.resize(
+            frame, (0, 0), fx=self.zoom_factor, fy=self.zoom_factor)
+        frame = frame[int(round(cy - h/self.zoom_factor * .5)): int(round(cy + h/self.zoom_factor * .5)),
+                      int(round(cx - w/self.zoom_factor * .5)): int(round(cx + w/self.zoom_factor * .5)),
+                      :]
+
+        return frame
 
     def to_grayscale(self, frame: Any) -> Any:
         return cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
