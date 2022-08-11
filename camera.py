@@ -4,6 +4,9 @@ import cv2
 import time
 import numpy as np
 
+GREEN = (0, 255, 0)
+THICKNESS = 2
+
 
 class VideoCamera:
     def __init__(self, type: str = ".jpg", index: int = -1) -> None:
@@ -40,9 +43,35 @@ class VideoCamera:
         if _:
             frame = self.apply_flips(frame=frame)
             _, image = cv2.imencode(self.type, frame)
+            frame = self.detect_people(frame=frame)
             self.previous_frame = frame
 
             return image.tobytes()
 
         _, image = cv2.imencode(self.type, self.previous_frame)
         return image.tobytes()
+
+    def detect_people(self, frame: Any) -> Any:
+        hog = cv2.HOGDescriptor()
+        hog.setSVMDetector(
+            cv2.HOGDescriptor_getDefaultPeopleDetector(),
+        )
+
+        frame = self.to_grayscale(frame=frame)
+        boxes, _ = hog.detectMultiScale(frame, winStride=(8, 8))
+        boxes = np.array(
+            [[x, y, x + w, y + h] for (x, y, w, h) in boxes]
+        )
+
+        for (xA, yA, xB, yB) in boxes:
+            cv2.rectangle(
+                frame,
+                (xA, yA), (xB, yB),
+                color=GREEN,
+                thickness=THICKNESS,
+            )
+
+        return frame
+
+    def to_grayscale(self, frame: Any) -> Any:
+        return cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
