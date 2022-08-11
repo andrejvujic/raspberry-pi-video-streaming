@@ -77,7 +77,8 @@ class VideoCamera:
                 thickness=THICKNESS,
             )
 
-        return self.to_color(frame=frame)
+        frame = self.to_color(frame=frame)
+        return frame
 
     def to_grayscale(self, frame: Any) -> Any:
         return cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
