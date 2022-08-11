@@ -1,3 +1,4 @@
+import time
 from urllib import request
 import webbrowser
 from flask import Flask, Response, render_template, request
@@ -36,14 +37,25 @@ def video():
     )
 
 
+def open_camera_feed(port: int) -> None:
+    time.sleep(5)
+    webbrowser.open(
+        f"http://0.0.0.0:{port}",
+    )
+
+
+PORT = camera.port
+
 if __name__ == "__main__":
     try:
-        webbrowser.open(
-            f"http://0.0.0.0:{camera.port}",
+        import threading
+        t = threading.Thread(
+            target=lambda: open_camera_feed(port=PORT),
         )
+        t.start()
 
         app.run(
-            host="0.0.0.0", port=camera.port,
+            host="0.0.0.0", port=PORT,
             debug=False,
         )
     finally:
