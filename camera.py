@@ -16,7 +16,7 @@ class VideoCamera:
         self.flip_h = config["flip_h"]
         self.flip_v = config["flip_v"]
         self.index = config["camera_index"]
-
+        self.zoom_factor = config["zoom_factor"]
         self.port = config["port"]
 
         self.cap = cv2.VideoCapture(self.index)
@@ -46,6 +46,7 @@ class VideoCamera:
         _, frame = self.cap.read()
         if _:
             frame = self.apply_flips(frame=frame)
+            frame = self.zoom(frame=frame)
             frame = self.detect_people(frame=frame)
 
             _, image = cv2.imencode(self.type, frame)
@@ -79,6 +80,11 @@ class VideoCamera:
 
         frame = self.to_color(frame=frame)
         return frame
+
+    def zoom(self, frame: Any):
+        return cv2.resize(
+            frame, None, fx=self.zoom_factor, fy=self.zoom_factor,
+        )
 
     def to_grayscale(self, frame: Any) -> Any:
         return cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
