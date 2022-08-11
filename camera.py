@@ -42,8 +42,10 @@ class VideoCamera:
         _, frame = self.cap.read()
         if _:
             frame = self.apply_flips(frame=frame)
-            _, image = cv2.imencode(self.type, frame)
             frame = self.detect_people(frame=frame)
+
+            _, image = cv2.imencode(self.type, frame)
+
             self.previous_frame = frame
 
             return image.tobytes()
@@ -71,7 +73,10 @@ class VideoCamera:
                 thickness=THICKNESS,
             )
 
-        return frame
+        return self.to_color(frame=frame)
 
     def to_grayscale(self, frame: Any) -> Any:
         return cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+
+    def to_color(self, frame: Any) -> Any:
+        return cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
