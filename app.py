@@ -1,4 +1,5 @@
 from urllib import request
+import webbrowser
 from flask import Flask, Response, render_template, request
 from camera import VideoCamera
 
@@ -35,6 +36,10 @@ def video():
 
 
 if __name__ == "__main__":
+    webbrowser.open(
+        f"http://0.0.0.0:{camera.port}",
+    )
+
     app.run(
         host="0.0.0.0", port=camera.port,
         debug=False,
